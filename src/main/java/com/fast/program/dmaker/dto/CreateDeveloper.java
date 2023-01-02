@@ -1,5 +1,6 @@
 package com.fast.program.dmaker.dto;
 
+import com.fast.program.dmaker.entity.Developer;
 import com.fast.program.dmaker.type.DeveloperLevel;
 import com.fast.program.dmaker.type.DeveloperSkillType;
 import lombok.*;
@@ -48,8 +49,17 @@ public class CreateDeveloper {
         private DeveloperLevel developerLevel;
         private DeveloperSkillType developerSkillType;
         private Integer experienceYears;
-
         private String memberId;
+
+        public static Response fromEntity(Developer developer) {
+            return Response.builder()
+                    .developerLevel(developer.getDeveloperLevel())
+                    .developerSkillType(developer.getDeveloperSkillType())
+                    .experienceYears(developer.getExperienceYears())
+                    .memberId(developer.getMemberId())
+                    .build();
+
+        }
 
     }
 }

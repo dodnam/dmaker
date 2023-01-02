@@ -1,13 +1,12 @@
 package com.fast.program.dmaker.controller;
 
 import com.fast.program.dmaker.dto.CreateDeveloper;
+import com.fast.program.dmaker.dto.DeveloperDetailDto;
+import com.fast.program.dmaker.dto.DeveloperDto;
 import com.fast.program.dmaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -21,22 +20,26 @@ public class DMakerController {
     private final DMakerService dMakerService;
 
     @GetMapping("/developers")
-    public List<String> getAllDevelopers() {
+    public List<DeveloperDto> getAllDevelopers() {
         // GET /developers HTTP/1.1
         log.info("GET /developers HTTP/1.1");
 
-        return Arrays.asList("song", "elsa", "olaf");
+        return dMakerService.getAllDevelopers();
+    }
+
+    @GetMapping("/developers/{memberId}")
+    public DeveloperDetailDto getDeveloper(@PathVariable String memberId) {
+
+        return dMakerService.getDeveloperDetail(memberId);
     }
 
     @PostMapping("/create-developers")
-    public List<String> createDevelopers(
+    public CreateDeveloper.Response createDevelopers(
             @Valid @RequestBody CreateDeveloper.Request request
             ) {
 
         log.info("request : {}", request);
 
-        dMakerService.createDeveloper(request);
-
-        return Collections.singletonList("song");
+        return dMakerService.createDeveloper(request);
     }
 }
