@@ -1,15 +1,13 @@
 package com.fast.program.dmaker.service;
 
-import com.fast.program.dmaker.dto.CreateDeveloper;
-import com.fast.program.dmaker.dto.DeveloperDetailDto;
-import com.fast.program.dmaker.dto.DeveloperDto;
-import com.fast.program.dmaker.dto.EditDeveloper;
+import com.fast.program.dmaker.code.StatusCode;
+import com.fast.program.dmaker.dto.*;
 import com.fast.program.dmaker.entity.Developer;
-import com.fast.program.dmaker.exception.DMakerErrorCode;
+import com.fast.program.dmaker.entity.RetiredDeveloper;
 import com.fast.program.dmaker.exception.DMakerException;
 import com.fast.program.dmaker.repository.DeveloperRepository;
+import com.fast.program.dmaker.repository.RetiredDeveloperRepository;
 import com.fast.program.dmaker.type.DeveloperLevel;
-import com.fast.program.dmaker.type.DeveloperSkillType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +23,7 @@ import static com.fast.program.dmaker.exception.DMakerErrorCode.*;
 @RequiredArgsConstructor // service와 controller에 쓰면 좋다. 자동으로 repository를 여기에 injection함.
 public class DMakerService {
     private final DeveloperRepository developerRepository;
+    private final RetiredDeveloperRepository retiredDeveloperRepository;
     private final EntityManager em;
 
     @Transactional
@@ -37,6 +36,7 @@ public class DMakerService {
                 .developerSkillType(request.getDeveloperSkillType())
                 .experienceYears(request.getExperienceYears())
                 .memberId(request.getMemberId())
+                .statusCode(StatusCode.EMPLOYED)
                 .name(request.getName())
                 .age(request.getAge())
                 .build();
@@ -56,8 +56,8 @@ public class DMakerService {
     }
 
 
-    public List<DeveloperDto> getAllDevelopers() {
-        return developerRepository.findAll()
+    public List<DeveloperDto> getAllEmployedDevelopers() {
+        return developerRepository.findDevelopersByStatusCodeEquals(StatusCode.EMPLOYED)
                 .stream().map(DeveloperDto::fromEntity) //Developer를 DeveloperDto로 바꿔주는 mapping
                 .collect(Collectors.toList());
     }
@@ -68,7 +68,7 @@ public class DMakerService {
                 .orElseThrow(() -> new DMakerException(NO_DEVELOPER)); // orElseThrow()는 만약 값이 없을 때 특정 응답을 한다. 보통 Exception을 발생
     }
 
-    @Transactional // 메소드에 들어가기 전 트랜잭션을 실행한 후, 메소드 실행 후를 db에 반영
+    @Transactional // 메소드에 들어가기 전 트랜잭션을 실행한 후, 메소드 실행 후를 db에 반영. 모든 db조작에 넣어주면 좋음
     public DeveloperDetailDto editDeveloper(String memberId, EditDeveloper.Request request) {
         validateEditDeveloperRequest(request, memberId);
 
@@ -102,5 +102,22 @@ public class DMakerService {
         if (developerLevel == DeveloperLevel.JUNIOR && experienceYears > 4) {
             throw new DMakerException(LEVEL_EXPERIENCE_YEAR_NOT_MATCHED);
         }
+    }
+
+    @Transactional
+    public DeveloperDetailDto deleteDeveloper(String memberId) {
+        // 1. EMPLOYED -> RETIRED
+        Developer developer = developerRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
+        developer.setStatusCode(StatusCode.RETIRED);
+
+        // 2. save into RetiredDeveloper
+        RetiredDeveloper retiredDeveloper = RetiredDeveloper.builder()
+                .memberId(memberId)
+                .name(developer.getName())
+                .build();
+
+        retiredDeveloperRepository.save(retiredDeveloper);
+        return DeveloperDetailDto.fromEntity(developer);
     }
 }

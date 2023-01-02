@@ -1,8 +1,6 @@
 package com.fast.program.dmaker.entity;
 
 import com.fast.program.dmaker.code.StatusCode;
-import com.fast.program.dmaker.type.DeveloperLevel;
-import com.fast.program.dmaker.type.DeveloperSkillType;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,22 +13,15 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor // Builder를 쓸 때 2개의 Constructor는 같이 있어야 오류가 덜 발생한다.
+@AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Developer {
+public class RetiredDeveloper {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @Enumerated(EnumType.STRING)
-    private DeveloperLevel developerLevel;
-
-    @Enumerated(EnumType.STRING)
-    private DeveloperSkillType developerSkillType;
-
-    private Integer experienceYears;
     private String memberId;
     private String name;
     private Integer age;
@@ -43,5 +34,4 @@ public class Developer {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
 }
