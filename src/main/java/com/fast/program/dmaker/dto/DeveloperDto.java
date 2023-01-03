@@ -5,8 +5,6 @@ import com.fast.program.dmaker.type.DeveloperLevel;
 import com.fast.program.dmaker.type.DeveloperSkillType;
 import lombok.*;
 
-import javax.persistence.Entity;
-
 @Getter
 @Setter
 @AllArgsConstructor

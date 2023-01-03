@@ -12,10 +12,4 @@ public class DMakerException extends RuntimeException {
         this.dMakerErrorCode = errorCode;
         this.detailMessage = errorCode.getMessage();
     }
-
-    public DMakerException(DMakerErrorCode errorCode, String detailMessage) {
-        super(detailMessage);
-        this.dMakerErrorCode = errorCode;
-        this.detailMessage = detailMessage;
-    }
 }

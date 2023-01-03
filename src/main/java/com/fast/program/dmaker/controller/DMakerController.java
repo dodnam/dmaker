@@ -1,11 +1,13 @@
 package com.fast.program.dmaker.controller;
 
 import com.fast.program.dmaker.dto.*;
+import com.fast.program.dmaker.exception.DMakerException;
 import com.fast.program.dmaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -35,8 +37,12 @@ public class DMakerController {
             ) {
 
         log.info("request : {}", request);
+        try {
+            return dMakerService.createDeveloper(request);
+        } catch (Exception e) {
+            return null;
+        }
 
-        return dMakerService.createDeveloper(request);
     }
 
     @PutMapping("/developer/{memberId}")
@@ -53,4 +59,6 @@ public class DMakerController {
     ){
         return dMakerService.deleteDeveloper(memberId);
     }
+
+
 }
