@@ -17,7 +17,7 @@ import java.util.List;
 public class DMakerController {
     private final DMakerService dMakerService;
 
-    @GetMapping("/developer")
+    @GetMapping("/developers")
     public List<DeveloperDto> getAllDevelopers() {
         // GET /developers HTTP/1.1
         log.info("GET /developers HTTP/1.1");
