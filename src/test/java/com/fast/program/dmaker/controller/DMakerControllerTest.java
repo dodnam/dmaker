@@ -1,7 +1,6 @@
 package com.fast.program.dmaker.controller;
 
 import com.fast.program.dmaker.dto.DeveloperDto;
-import com.fast.program.dmaker.entity.Developer;
 import com.fast.program.dmaker.service.DMakerService;
 import com.fast.program.dmaker.type.DeveloperLevel;
 import com.fast.program.dmaker.type.DeveloperSkillType;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
